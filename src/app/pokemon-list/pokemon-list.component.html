@@ -1,13 +1,12 @@
-<img src="https://images.hive.blog/768x0/https://steemitimages.com/DQmY5CphWSTwzJHi8Y7h1h1F4vV9EpgeNhypZcQ1MvTNFCQ/Pokedex-02.png"
-width=200px/>
-    
 <div class="pokemon-list">
     <app-pokemon-card
-        *ngFor = "let pokemon of pokemons; index as i"
-        [pokemon]="pokemon"
+        *ngFor = "let pokemon of pokemonService.pokemons; index as i"
+        [pokemon]= "pokemon['name']"
         [numero]="i + 1"
     ></app-pokemon-card>
 </div>
+
+
 
 <!--
 <div *ngFor="let pokemon of pokemons"> Pokemon: {{pokemon}}</div>
