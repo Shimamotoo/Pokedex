@@ -11,7 +11,7 @@ export function PokemonsList({pokemonsList}: PokemonsListProps) {
     }
 
     return(
-        <ul>
+        <ul className="grid grid-cols-2 gap-1 md:grid-cols-5 lg:grid-cols-9">
             {pokemonsList.map(pokemon => (
                 <PokemonCard key={pokemon.name} pokemon={pokemon} />
             ))}

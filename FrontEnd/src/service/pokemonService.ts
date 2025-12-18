@@ -3,7 +3,7 @@ import type { PokemonItem, PokemonDetails, PokemonCardData } from "../types/Poke
 
 export const pokemonService = {
 
-  async getPokemons(limit = 9): Promise<PokemonItem[]> {
+  async getPokemons(limit = 151): Promise<PokemonItem[]> {
     const response = await pokeApi.get(`/pokemon?limit=${limit}`);
     return response.data.results;
   },
