@@ -1,5 +1,6 @@
 import { Router } from "express";
 import db from "../../database/db.js";
+import bcrypt from "bcrypt";
 
 const router = Router();
 
@@ -18,7 +19,7 @@ router.post("/register", (req, res) => {
 
   const checkEmailQuery = "SELECT id FROM users WHERE email = ?";
 
-  db.query(checkEmailQuery, [email], (err, results) => {
+  db.query(checkEmailQuery, [email], async  (err, results) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: "Erro ao verificar email." });
@@ -28,23 +29,31 @@ router.post("/register", (req, res) => {
       return res.status(409).json({ error: "Email já cadastrado." });
     }
 
-    const insertQuery = `
-      INSERT INTO users (name, email, password)
-      VALUES (?, ?, ?)
-    `;
+    try{
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    db.query(insertQuery, [name, email, password], (err, result) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ error: "Erro ao criar usuário." });
-      }
+      const insertQuery = `
+        INSERT INTO users (name, email, password)
+        VALUES (?, ?, ?)
+      `;
 
-      res.status(201).json({
-        id: result.insertId,
-        name,
-        email
+      db.query(insertQuery, [name, email, hashedPassword], (err, result) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).json({ error: "Erro ao criar usuário." });
+        }
+  
+        res.status(201).json({
+          id: result.insertId,
+          name,
+          email
+        });
       });
-    });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Erro ao gerar hash da senha." });
+    }
   });
 });
 
