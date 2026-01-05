@@ -45,6 +45,7 @@ router.post("/register", (req, res) => {
         }
   
         res.status(201).json({
+          message: "Cadastro realizado com sucesso",
           id: result.insertId,
           name,
           email
@@ -54,6 +55,45 @@ router.post("/register", (req, res) => {
       console.error(error);
       res.status(500).json({ error: "Erro ao gerar hash da senha." });
     }
+  });
+});
+
+router.post("/login", (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: "Campo email é obrigatório." });
+  }
+  if (!password) {
+    return res.status(400).json({ error: "Campo senha é obrigatório." });
+  }
+  
+  const loginQuery = "SELECT id, name, email, password FROM users WHERE email = ?";
+
+  db.query(loginQuery, [email], async (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Erro ao verificar usuário." });
+    }
+
+    if (results.length === 0) {
+      return res.status(401).json({ error: "Email ou senha inválidos." });
+    }
+
+    const user = results[0];
+
+    const senhaValida = await bcrypt.compare(password, user.password);
+
+    if(!senhaValida){
+      return res.status(401).json({ error: "Email ou senha inválidos" })
+    }
+
+    return res.status(200).json({
+      message: "Login realizado com sucesso",
+      user: {
+        name: user.name,
+        email: user.email
+      }
+    });
   });
 });
 
