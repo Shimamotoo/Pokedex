@@ -1,7 +1,9 @@
+import "./config/env.js"
 import express, { json } from "express";
 import cors from "cors";
 import db from "./database/db.js";
 import authRoutes from "./routes/auth/authRoutes.js"
+
 
 const app = express();
 
