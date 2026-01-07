@@ -1,13 +1,13 @@
 import './App.css'
-import Pokedex from './components/Pokedex'
+// import Pokedex from './components/Pokedex'
+import LoginPage from './pages/LoginPage'
 
 
 function App() {
 
 
-  return (
-    <Pokedex />
-
+  return ( 
+    <LoginPage/>
   )
 }
 
