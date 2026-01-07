@@ -1,6 +1,8 @@
 import { Router } from "express";
 import db from "../../database/db.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
 
 const router = Router();
 
@@ -87,8 +89,15 @@ router.post("/login", (req, res) => {
       return res.status(401).json({ error: "Email ou senha inválidos" })
     }
 
+    const token = jwt.sign(
+      { userId: user.id },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN }
+    )
+
     return res.status(200).json({
       message: "Login realizado com sucesso",
+      token,
       user: {
         name: user.name,
         email: user.email
