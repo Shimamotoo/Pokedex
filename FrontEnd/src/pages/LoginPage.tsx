@@ -1,6 +1,7 @@
 import { useState } from "react";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import axios from 'axios';
 
 export function LoginPage() {
 
@@ -8,6 +9,40 @@ export function LoginPage() {
     const [password, setPassword] = useState("");
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
+
+    async function handleSubmit(e:React.FormEvent){
+        e.preventDefault();
+
+        let hasError = false;
+
+        if(!email){
+            setEmailError("Campo de email é obrigatório.");
+            hasError = true
+        } else {
+            setEmailError("");
+        }
+
+        if (!password) {
+            setPasswordError("Campo de senha é obrigatório");
+            hasError = true;
+        } else {
+            setPasswordError("");
+        }
+        
+        if (hasError) return; 
+
+        try{
+            const response = await axios.post("http://localhost:3000/auth/login", {
+                email,
+                password
+            });
+            console.log(response.data);
+        } catch(error) {
+            console.log(error)
+        }
+        
+               
+    }
 
     return(
         <div className="w-full min-h-screen font-sans bg-gray-800">
@@ -18,27 +53,7 @@ export function LoginPage() {
                 <div className="w-full max-w-sm">
                     <h1 className="mb-6 text-2xl font-bold">Login</h1>
 
-                    <form className="flex flex-col gap-4" onSubmit={(e) => {
-                        e.preventDefault();
-                        
-                        let hasError = false;
-
-                        if(!email){
-                            setEmailError("Campo de email é obrigatório.");
-                            hasError = true
-                        } else {
-                            setEmailError("");
-                        }
-
-                        if (!password) {
-                            setPasswordError("Campo de senha é obrigatório");
-                            hasError = true;
-                        } else {
-                            setPasswordError("");
-                        } 
-                        
-                        if (hasError) return;
-                    }}>
+                    <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                         <div className="flex flex-col">
                             <TextField 
                                 id="email" 
