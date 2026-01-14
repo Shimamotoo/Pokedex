@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { pokemonService } from "../service/pokemonService";
+import { pokemonService } from "../services/pokemonService";
 import type { PokemonCardData } from "../types/Pokemon";
 import { PokemonsList } from "./PokemonsList";
 

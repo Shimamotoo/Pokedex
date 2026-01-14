@@ -1,10 +1,8 @@
 import { useState } from "react";
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import axios from 'axios';
-import type { LoginResponse } from "../types/LoginResponse";
+import { useAuth } from "../contexts/useAuth";
 
 export function LoginPage() {
+    const { login } = useAuth();
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("");
@@ -33,13 +31,9 @@ export function LoginPage() {
         if (hasError) return; 
 
         try{
-            const response = await axios.post<LoginResponse>("http://localhost:3000/auth/login", {
-                email,
-                password
-            });
-            console.log(response.data);
+            await login(email, password);                      
         } catch(error) {
-            console.log(error)
+            console.log(error);
         }
         
                
@@ -47,75 +41,60 @@ export function LoginPage() {
 
     return(
         <div className="w-full min-h-screen font-sans bg-gray-800">
-            <main className="flex min-h-screen text-white bg-gradient-to-r from-slate-900 via-slate-900 to-indigo-600">
+            <main className="flex min-h-screen text-white ">
 
                 {/* Lado esquerdo */}
-                <section className="flex items-center justify-center flex-1 ">
+                <section className="flex items-center justify-center flex-1 bg-gray-900">
                 <div className="w-full max-w-sm">
                     <h1 className="mb-6 text-2xl font-bold">Login</h1>
 
                     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                         <div className="flex flex-col">
-                            <TextField 
+                            <input 
+                                type="text" 
                                 id="email" 
-                                label="Email" 
-                                variant="standard" 
-                                type="text"
-                                fullWidth 
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                error={!!emailError}
-                                helperText={emailError}
-                                sx={{ 
-                                    input: { color: 'white' }, 
-                                    label: { color: 'gray' },
-                                    '& .MuiInput-underline:before': { borderBottomColor: 'white' },
-                                }}
+                                placeholder="Email"
+                                className={`
+                                    p-3 bg-gray-800 rounded-md outline-none transition-all border
+                                    ${emailError 
+                                        ? 'border-red-500 focus:border-red-500' 
+                                        : 'border-transparent focus:border-blue-500'}
+                                `} 
                             />
+                            {emailError && <span className="mt-1 text-sm text-red-500">{emailError}</span>}
                         </div>
 
                         <div className="flex flex-col">
-                            <TextField 
+                            <input 
+                                type="password" 
                                 id="password" 
-                                label="Senha" 
-                                variant="standard" 
-                                type="password"
-                                fullWidth
                                 value={password}
-                                onChange={(e) => setPassword(e.target.value)} 
-                                error={!!passwordError}
-                                helperText={passwordError}
-                                sx={{ 
-                                    input: { color: 'white' }, 
-                                    label: { color: 'gray' },
-                                    '& .MuiInput-underline:before': { borderBottomColor: 'white' }
-                                }}
-                            />                        
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Senha"  
+                                className={`
+                                    p-3 bg-gray-800 rounded-md outline-none transition-all border
+                                    ${passwordError 
+                                        ? 'border-red-500 focus:border-red-500' 
+                                        : 'border-transparent focus:border-blue-500'}
+                                `}                                 
+                            />
+                            {passwordError && <span className="mt-1 text-sm text-red-500">{passwordError}</span>}
                         </div>
-                        <div>   
-                            <Button 
-                                type="submit"
-                                variant="contained" 
-                                sx={{ 
-                                    backgroundColor: '#4f46e5', 
-                                    '&:hover': {
-                                    backgroundColor: '#4338ca', 
-                                    }
-                                }}
-                                fullWidth
-                            >
+                        <div>
+                            <button type="submit" className="w-full p-3 font-semibold rounded-md bg-gradient-to-r from-indigo-800 to-indigo-600">
                                 Entrar
-                            </Button>
+                            </button>   
                         </div>
                     </form>
                 </div>
                 </section>
-
                 {/* Lado direito */}
-                <section className="flex items-center justify-center flex-1 ">
+                <section className="flex items-center justify-center flex-1 bg-gradient-to-r from-indigo-800 to-indigo-600">
                 <header>
                     <h1 className="text-3xl font-bold">Pokedex</h1>
-                    <p className="text-sm text-indigo-200 opacity" >Projeto pessoal e portfólio</p>
+                    <h2 className="text-indigo-200 opacity" >Projeto pessoal e portfólio</h2>
                 </header>
                 </section>
 
