@@ -2,6 +2,7 @@ import { useState } from "react";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import axios from 'axios';
+import type { LoginResponse } from "../types/LoginResponse";
 
 export function LoginPage() {
 
@@ -32,7 +33,7 @@ export function LoginPage() {
         if (hasError) return; 
 
         try{
-            const response = await axios.post("http://localhost:3000/auth/login", {
+            const response = await axios.post<LoginResponse>("http://localhost:3000/auth/login", {
                 email,
                 password
             });
