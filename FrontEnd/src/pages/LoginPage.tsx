@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useAuth } from "../contexts/useAuth";
+import { useNavigate } from "react-router-dom";
 
-export function LoginPage() {
+function LoginPage() {
     const { login } = useAuth();
+    const navigate = useNavigate();
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("");
@@ -31,11 +33,11 @@ export function LoginPage() {
         if (hasError) return; 
 
         try{
-            await login(email, password);                      
+            await login(email, password); 
+            navigate("/home");                     
         } catch(error) {
-            console.log(error);
+            console.log('Erro ao fazer o login',error);
         }
-        
                
     }
 

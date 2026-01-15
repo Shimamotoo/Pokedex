@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { pokemonService } from "../services/pokemonService";
 import type { PokemonCardData } from "../types/Pokemon";
-import { PokemonsList } from "./PokemonsList";
+import { PokemonsList } from "../components/PokemonsList";
 
-export function Pokedex() {
+function Pokedex() {
   const [pokemons, setPokemons] = useState<PokemonCardData[]>([]);
 
   const [loading, setLoading] = useState(true);
