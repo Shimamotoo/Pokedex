@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useAuth } from "../contexts/useAuth";
 import { useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 
 function LoginPage() {
     const { login } = useAuth();
     const navigate = useNavigate();
 
+    const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("");
     const [emailError, setEmailError] = useState("");
@@ -36,7 +38,8 @@ function LoginPage() {
             await login(email, password); 
             navigate("/home");                     
         } catch(error) {
-            console.log('Erro ao fazer o login',error);
+            alert('Email ou senha incorreto.');
+            console.error(error)
         }
                
     }
@@ -68,24 +71,32 @@ function LoginPage() {
                             {emailError && <span className="mt-1 text-sm text-red-500">{emailError}</span>}
                         </div>
 
-                        <div className="flex flex-col">
-                            <input 
-                                type="password" 
-                                id="password" 
+                        <div className="relative flex flex-col">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                id="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Senha"  
+                                placeholder="Senha"
                                 className={`
-                                    p-3 bg-gray-800 rounded-md outline-none transition-all border
-                                    ${passwordError 
-                                        ? 'border-red-500 focus:border-red-500' 
-                                        : 'border-transparent focus:border-blue-500'}
-                                `}                                 
+                                p-3 pr-10 bg-gray-800 rounded-md outline-none transition-all border
+                                ${passwordError 
+                                    ? "border-red-500 focus:border-red-500" 
+                                    : "border-transparent focus:border-blue-500"}
+                                `}
                             />
+
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword((prev) => !prev)}
+                                className="absolute text-gray-500 right-3 top-4 hover:text-white"
+                            >
+                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                            </button>
                             {passwordError && <span className="mt-1 text-sm text-red-500">{passwordError}</span>}
                         </div>
                         <div>
-                            <button type="submit" className="w-full p-3 font-semibold rounded-md bg-gradient-to-r from-indigo-800 to-indigo-600">
+                            <button type="submit" className="w-full p-3 font-semibold transition-all rounded-md bg-gradient-to-r from-indigo-800 to-indigo-600 hover:brightness-75">
                                 Entrar
                             </button>   
                         </div>
