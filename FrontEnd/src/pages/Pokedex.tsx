@@ -25,11 +25,11 @@ function Pokedex() {
 
   if (loading) {
     return (
-        <div className="w-full min-h-screen font-sans bg-gray-800">
-            <div className="flex justify-center p-6">
-                <p className="text-white">Carregando...</p>
-            </div>
+      <div className="w-full min-h-screen font-sans bg-gray-800">
+        <div className="flex justify-center p-6">
+          <p className="text-white">Carregando...</p>
         </div>
+      </div>
     );
   }
 

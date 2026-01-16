@@ -4,117 +4,130 @@ import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 
 function LoginPage() {
-    const { login } = useAuth();
-    const navigate = useNavigate();
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-    const [showPassword, setShowPassword] = useState(false);
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("");
-    const [emailError, setEmailError] = useState("");
-    const [passwordError, setPasswordError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
-    async function handleSubmit(e:React.FormEvent){
-        e.preventDefault();
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
 
-        let hasError = false;
+    let hasError = false;
 
-        if(!email){
-            setEmailError("Campo de email é obrigatório.");
-            hasError = true
-        } else {
-            setEmailError("");
-        }
-
-        if (!password) {
-            setPasswordError("Campo de senha é obrigatório");
-            hasError = true;
-        } else {
-            setPasswordError("");
-        }
-        
-        if (hasError) return; 
-
-        try{
-            await login(email, password); 
-            navigate("/home");                     
-        } catch(error) {
-            alert('Email ou senha incorreto.');
-            console.error(error)
-        }
-               
+    if (!email) {
+      setEmailError("Campo de email é obrigatório.");
+      hasError = true;
+    } else {
+      setEmailError("");
     }
 
-    return(
-        <div className="w-full min-h-screen font-sans bg-gray-800">
-            <main className="flex min-h-screen text-white ">
+    if (!password) {
+      setPasswordError("Campo de senha é obrigatório");
+      hasError = true;
+    } else {
+      setPasswordError("");
+    }
 
-                {/* Lado esquerdo */}
-                <section className="flex items-center justify-center flex-1 bg-gray-900">
-                <div className="w-full max-w-sm">
-                    <h1 className="mb-6 text-2xl font-bold">Login</h1>
+    if (hasError) return;
 
-                    <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-                        <div className="flex flex-col">
-                            <input 
-                                type="text" 
-                                id="email" 
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Email"
-                                className={`
-                                    p-3 bg-gray-800 rounded-md outline-none transition-all border
-                                    ${emailError 
-                                        ? 'border-red-500 focus:border-red-500' 
-                                        : 'border-transparent focus:border-blue-500'}
-                                `} 
-                            />
-                            {emailError && <span className="mt-1 text-sm text-red-500">{emailError}</span>}
-                        </div>
+    try {
+      await login(email, password);
+      navigate("/home");
+    } catch (error) {
+      alert("Email ou senha incorreto.");
+      console.error(error);
+    }
+  }
 
-                        <div className="relative flex flex-col">
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                id="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Senha"
-                                className={`
-                                p-3 pr-10 bg-gray-800 rounded-md outline-none transition-all border
-                                ${passwordError 
-                                    ? "border-red-500 focus:border-red-500" 
-                                    : "border-transparent focus:border-blue-500"}
+  return (
+    <div className="w-full min-h-screen font-sans bg-gray-800">
+      <main className="flex min-h-screen text-white ">
+        {/* Lado esquerdo */}
+        <section className="flex items-center justify-center flex-1 bg-gray-900">
+          <div className="w-full max-w-sm">
+            <h1 className="mb-6 text-2xl font-bold">Login</h1>
+
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+              <div className="flex flex-col">
+                <input
+                  type="text"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
+                  className={`
+                                p-3 bg-gray-800 rounded-md outline-none transition-all border
+                                ${
+                                    emailError
+                                    ? "border-red-500 focus:border-red-500"
+                                    : "border-transparent focus:border-blue-500"
+                                }
+                            `}
+                />
+                {emailError && (
+                  <span className="mt-1 text-sm text-red-500">
+                    {emailError}
+                  </span>
+                )}
+              </div>
+
+              <div className="relative flex flex-col">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Senha"
+                  className={`
+                                    p-3 pr-10 bg-gray-800 rounded-md outline-none transition-all border
+                                    ${
+                                      passwordError
+                                        ? "border-red-500 focus:border-red-500"
+                                        : "border-transparent focus:border-blue-500"
+                                    }
                                 `}
-                            />
+                />
 
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword((prev) => !prev)}
-                                className="absolute text-gray-500 right-3 top-4 hover:text-white"
-                            >
-                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                            </button>
-                            {passwordError && <span className="mt-1 text-sm text-red-500">{passwordError}</span>}
-                        </div>
-                        <div>
-                            <button type="submit" className="w-full p-3 font-semibold transition-all rounded-md bg-gradient-to-r from-indigo-800 to-indigo-600 hover:brightness-75">
-                                Entrar
-                            </button>   
-                        </div>
-                    </form>
-                </div>
-                </section>
-                {/* Lado direito */}
-                <section className="flex items-center justify-center flex-1 bg-gradient-to-r from-indigo-800 to-indigo-600">
-                <header>
-                    <h1 className="text-3xl font-bold">Pokedex</h1>
-                    <h2 className="text-indigo-200 opacity" >Projeto pessoal e portfólio</h2>
-                </header>
-                </section>
-
-            </main>
-        </div>
-
-    )
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute text-gray-500 right-3 top-4 hover:text-white"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+                {passwordError && (
+                  <span className="mt-1 text-sm text-red-500">
+                    {passwordError}
+                  </span>
+                )}
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  className="w-full p-3 font-semibold transition-all rounded-md bg-gradient-to-r from-indigo-800 to-indigo-600 hover:brightness-75"
+                >
+                  Entrar
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+        {/* Lado direito */}
+        <section className="flex items-center justify-center flex-1 bg-gradient-to-r from-indigo-800 to-indigo-600">
+          <header>
+            <h1 className="text-3xl font-bold">Pokedex</h1>
+            <h2 className="text-indigo-200 opacity">
+              Projeto pessoal e portfólio
+            </h2>
+          </header>
+        </section>
+      </main>
+    </div>
+  );
 }
 
 export default LoginPage;
