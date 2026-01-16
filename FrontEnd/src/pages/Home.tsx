@@ -1,42 +1,7 @@
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/useAuth";
-
-
 function Home(){
     
-    const { user } = useAuth();
-    const { logout } = useAuth();
-    const navigate = useNavigate();
-
-    function handleLogout(){
-        logout()
-        navigate("/login");
-    }
-
     return(
         <div className="min-h-screen text-white bg-gray-900">
-        
-            {/* HEADER */}
-            <header className="flex items-center justify-between px-8 py-4 bg-gray-800">
-                <div className="text-xl font-bold">Pokedex</div>
-
-                <div className="text-sm">
-                Bem-vindo, {" "} <span className="font-semibold"> {user?.name ?? "Treinador"} </span>
-                </div>
-
-                <div className="flex gap-4 text-sm">
-                <button className="px-6 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">Perfil</button>
-                <button className="hover:text-red-400" onClick={handleLogout}>Sair</button>
-                </div>
-            </header>
-
-            {/* MENU */}
-            <nav className="flex justify-center gap-8 py-4 text-sm bg-gray-700">
-                <button className="hover:text-indigo-400">TeamBuilder</button>
-                <button className="hover:text-indigo-400">Pokédex</button>
-                <button className="hover:text-indigo-400">DayCare</button>
-            </nav>
-
             {/* EVENTO PRINCIPAL */}
             <section className="flex flex-col items-center justify-center px-6 py-16 text-center bg-gray-800">
                 <h2 className="mb-4 text-xl font-semibold">

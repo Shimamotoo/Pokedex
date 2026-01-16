@@ -1,19 +1,27 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import { PrivateRoute } from "./PrivateRoutes";
 import LoginPage from "../pages/LoginPage";
 import Home from "../pages/Home";
 import Pokedex from "../pages/Pokedex";
-import { PrivateRoute } from "./PrivateRoutes";
+import AppLayout from "../layouts/AppLayout";
+import TeamBuilder from "../pages/TeamBuilder";
+import DayCare from "../pages/DayCare";
 
 export function AppRoutes() {
   return (
     <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/home"element={
-          <PrivateRoute>
-            <Home />
-          </PrivateRoute>}/>
-        <Route path="/pokedex" element={<Pokedex/>}/>
+
+        <Route element={<PrivateRoute />}>
+          <Route element={<AppLayout />}>
+            <Route path="/home" element={<Home />} />
+            <Route path="/teambuilder" element={<TeamBuilder />} />
+            <Route path="/pokedex" element={<Pokedex />} />
+            <Route path="/daycare" element={<DayCare />} />
+          </Route>
+        </Route>
+
     </Routes>
   );
 }
