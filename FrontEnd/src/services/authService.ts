@@ -14,7 +14,7 @@ export const authService = {
 
         } catch(error){
             console.error(error)
-            throw error;
+            throw error; 
         }
     }   
 }
