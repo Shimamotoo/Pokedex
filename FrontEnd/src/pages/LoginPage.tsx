@@ -56,6 +56,7 @@ function LoginPage() {
                 <input
                   type="text"
                   id="email"
+                  autoComplete="off"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email"

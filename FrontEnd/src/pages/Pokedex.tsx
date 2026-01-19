@@ -1,45 +1,13 @@
-import { useState, useEffect } from "react";
-import { pokemonService } from "../services/pokemonService";
-import type { PokemonCardData } from "../types/Pokemon";
 import { PokemonsList } from "../components/PokemonsList";
+import { usePokemons } from "../hooks/usePokemons";
 
 function Pokedex() {
-  const [pokemons, setPokemons] = useState<PokemonCardData[]>([]);
+  const { pokemons, isLoading, error } = usePokemons(151);
 
-  const [loading, setLoading] = useState(true);
+  if (isLoading) return <p>Carregando...</p>;
+  if (error) return <p className="text-red-400">{error}</p>;
 
-  useEffect(() => {
-    loadPokemons();
-  }, []);
-
-  const loadPokemons = async () => {
-    try {
-      const data = await pokemonService.getPokemonItem();
-      setPokemons(data);
-    } catch (error) {
-      console.error("Erro ao carregar os pokemons", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="w-full min-h-screen font-sans bg-gray-800">
-        <div className="flex justify-center p-6">
-          <p className="text-white">Carregando...</p>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="w-full min-h-screen font-sans bg-gray-800">
-      <div className="max-w-[1600px] mx-auto p-3">
-        <PokemonsList pokemonsList={pokemons} />
-      </div>
-    </div>
-  );
+  return <PokemonsList pokemonsList={pokemons} />;
 }
 
 export default Pokedex;

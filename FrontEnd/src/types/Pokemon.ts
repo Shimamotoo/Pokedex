@@ -5,6 +5,11 @@ export interface PokemonItem {
 // Sprites
 export interface PokemonSprites {
   front_default: string | null;
+  other?: {
+    "official-artwork"?:{
+      front_default: string | null;
+    }
+  }
 }
 
 // Types
