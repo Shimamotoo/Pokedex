@@ -1,32 +1,38 @@
 import jwt from "jsonwebtoken";
 
-export default function authMiddleware(req, res, next) {
-  
-  const authHeader = req.headers.authorization;
+export function authMiddleware(req, res, next) {
+  const authHeader = req.headers.authorization; // "Bearer xxx"
 
   if (!authHeader) {
-    return res.status(401).json({ error: "Token não fornecido." });
+    return res.status(401).json({ error: "Token não informado." });
   }
 
-  const parts = authHeader.split(" ");
+  const [scheme, token] = authHeader.split(" ");
 
-  if (parts.length !== 2) {
-    return res.status(401).json({ error: "Token mal formatado." });
-  }
-
-  const [scheme, token] = parts;
-
-  if (scheme !== "Bearer") {
-    return res.status(401).json({ error: "Token mal formatado." });
+  if (scheme !== "Bearer" || !token) {
+    return res.status(401).json({ error: "Formato do token inválido." });
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      return res.status(500).json({ error: "JWT_SECRET não configurado." });
+    }
 
-    req.userId = decoded.userId;
+    const decoded = jwt.verify(token, secret);
 
-    next();
-  } catch (err) {
+    const userId = decoded.userId;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Token inválido (sem userId)." });
+    }
+
+    req.user = { id: userId };
+    return next();
+
+  } catch {
+
     return res.status(401).json({ error: "Token inválido ou expirado." });
+    
   }
 }
