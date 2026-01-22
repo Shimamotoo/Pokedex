@@ -1,5 +1,9 @@
 import pokeApi from "./pokeAPI";
-import type { PokemonItem, PokemonDetails, PokemonCardData } from "../types/Pokemon";
+import type {
+  PokemonItem,
+  PokemonDetails,
+  PokemonCardData,
+} from "../types/Pokemon";
 
 export const pokemonService = {
   async getPokemons(limit = 151): Promise<PokemonItem[]> {
@@ -15,7 +19,9 @@ export const pokemonService = {
   async getPokemonItem(limit = 151): Promise<PokemonCardData[]> {
     const pokemonsNomes = await this.getPokemons(limit);
 
-    const detailsPromises = pokemonsNomes.map((p) => this.getPokemonDetail(p.name));
+    const detailsPromises = pokemonsNomes.map((p) =>
+      this.getPokemonDetail(p.name),
+    );
     const pokemonsDetails = await Promise.all(detailsPromises);
 
     return pokemonsDetails.map((pokemon) => ({

@@ -10,16 +10,12 @@ export function useTeam(): UseTeamResponse {
     setStatus("loading");
 
     try {
-
       const data = await createTeamService(payload);
       setStatus("success");
       return data;
-
     } catch (err) {
-
       setStatus("error");
-      throw err; 
-
+      throw err;
     }
   }, []);
 

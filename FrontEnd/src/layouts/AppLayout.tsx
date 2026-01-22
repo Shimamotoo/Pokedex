@@ -6,7 +6,7 @@ function AppLayout() {
   return (
     <div className="min-h-screen text-white bg-gray-900">
       <Header />
-      
+
       <main>
         <Toaster position="top-right" />
         <Outlet />

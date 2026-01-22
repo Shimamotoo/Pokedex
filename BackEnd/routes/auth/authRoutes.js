@@ -3,7 +3,6 @@ import db from "../../database/db.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-
 const router = Router();
 
 router.post("/register", (req, res) => {
@@ -21,7 +20,7 @@ router.post("/register", (req, res) => {
 
   const checkEmailQuery = "SELECT id FROM users WHERE email = ?";
 
-  db.query(checkEmailQuery, [email], async  (err, results) => {
+  db.query(checkEmailQuery, [email], async (err, results) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: "Erro ao verificar email." });
@@ -31,7 +30,7 @@ router.post("/register", (req, res) => {
       return res.status(409).json({ error: "Email já cadastrado." });
     }
 
-    try{
+    try {
       const saltRounds = 10;
       const hashedPassword = await bcrypt.hash(password, saltRounds);
 
@@ -45,12 +44,12 @@ router.post("/register", (req, res) => {
           console.error(err);
           return res.status(500).json({ error: "Erro ao criar usuário." });
         }
-  
+
         res.status(201).json({
           message: "Cadastro realizado com sucesso",
           id: result.insertId,
           name,
-          email
+          email,
         });
       });
     } catch (error) {
@@ -69,8 +68,9 @@ router.post("/login", (req, res) => {
   if (!password) {
     return res.status(400).json({ error: "Campo senha é obrigatório." });
   }
-  
-  const loginQuery = "SELECT id, name, email, password FROM users WHERE email = ?";
+
+  const loginQuery =
+    "SELECT id, name, email, password FROM users WHERE email = ?";
 
   db.query(loginQuery, [email], async (err, results) => {
     if (err) {
@@ -85,23 +85,21 @@ router.post("/login", (req, res) => {
 
     const senhaValida = await bcrypt.compare(password, user.password);
 
-    if(!senhaValida){
-      return res.status(401).json({ error: "Email ou senha inválidos" })
+    if (!senhaValida) {
+      return res.status(401).json({ error: "Email ou senha inválidos" });
     }
 
-    const token = jwt.sign(
-      { userId: user.id },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN }
-    )
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    });
 
     return res.status(200).json({
       message: "Login realizado com sucesso",
       token,
       user: {
         name: user.name,
-        email: user.email
-      }
+        email: user.email,
+      },
     });
   });
 });

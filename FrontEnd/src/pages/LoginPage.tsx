@@ -63,7 +63,7 @@ function LoginPage() {
                   className={`
                                 p-3 bg-gray-800 rounded-md outline-none transition-all border
                                 ${
-                                    emailError
+                                  emailError
                                     ? "border-red-500 focus:border-red-500"
                                     : "border-transparent focus:border-blue-500"
                                 }

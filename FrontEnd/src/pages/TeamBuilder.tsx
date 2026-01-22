@@ -11,9 +11,8 @@ const TEAM_STORAGE_KEY = "pokedex:team";
 const TEAM_SIZE = 6;
 
 function TeamBuilder() {
+  const { status, createTeam } = useTeam();
 
-  const { status, createTeam } = useTeam()
- 
   const { pokemons, isLoading, error } = usePokemons(151);
 
   const [team, setTeam] = useState<PokemonCardData[]>(() => {
@@ -27,7 +26,7 @@ function TeamBuilder() {
     }
   });
 
-  const [teamName, setTeamName] = useState<string>("")
+  const [teamName, setTeamName] = useState<string>("");
 
   const [search, setSearch] = useState("");
 
@@ -66,44 +65,38 @@ function TeamBuilder() {
   }
 
   async function handleCreateTeam() {
-
     if (!teamName.trim() || team.length !== TEAM_SIZE) return;
-    
+
     const payload: CreateTeamPayload = {
       name: teamName.trim(),
-      pokemonIds: team.map(p => p.id),
-    };    
+      pokemonIds: team.map((p) => p.id),
+    };
 
-    try{
+    try {
       await createTeam(payload);
       localStorage.setItem(TEAM_STORAGE_KEY, JSON.stringify(team));
       toast.success("Time salvo!");
-      setTeam([])
-      setTeamName("")
-
+      setTeam([]);
+      setTeamName("");
     } catch {
       toast.error("Erro ao salvar");
     }
-    
   }
 
-  function handleClearTeam(){
-    setTeam([])
-  };
-
+  function handleClearTeam() {
+    setTeam([]);
+  }
 
   return (
     <div className="w-full px-4 py-3">
       <section className="flex flex-col gap-4 mb-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold">TeamBuilder</h1>
-          <p className="text-sm text-gray-300">
-            Monte seu time de 6 Pokémons.
-          </p>
+          <p className="text-sm text-gray-300">Monte seu time de 6 Pokémons.</p>
         </div>
 
-        <input 
-          type="text" 
+        <input
+          type="text"
           value={teamName}
           onChange={(e) => setTeamName(e.target.value)}
           className="w-full p-3 text-white bg-gray-800 border border-gray-700 rounded-md outline-none focus:border-indigo-500"
@@ -119,12 +112,13 @@ function TeamBuilder() {
             type="button"
             onClick={handleCreateTeam}
             className={`px-5 py-2 font-semibold rounded-md transition-all ${
-                isDisabled? 'bg-slate-400 cursor-not-allowed':'bg-indigo-600 hover:bg-indigo-500'
-              }`
-            }
+              isDisabled
+                ? "bg-slate-400 cursor-not-allowed"
+                : "bg-indigo-600 hover:bg-indigo-500"
+            }`}
             disabled={isDisabled || status === "loading"}
           >
-            {status === "loading"? "Salvando..." : "Salvar"}
+            {status === "loading" ? "Salvando..." : "Salvar"}
           </button>
 
           <button
@@ -177,13 +171,16 @@ function TeamBuilder() {
       <section className="mb-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex-1">
-            <label htmlFor="search" className="block mb-2 text-sm text-gray-300">
+            <label
+              htmlFor="search"
+              className="block mb-2 text-sm text-gray-300"
+            >
               Buscar Pokémon
             </label>
 
             <div className="relative">
               <input
-                id='search'
+                id="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Digite o nome (ex: pikachu)"

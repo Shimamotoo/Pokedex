@@ -20,7 +20,9 @@ router.post("/", authMiddleware, (req, res) => {
   }
 
   if (new Set(pokemonIds).size !== pokemonIds.length) {
-    return res.status(400).json({ error: "Não pode ter Pokémon duplicado no time." });
+    return res
+      .status(400)
+      .json({ error: "Não pode ter Pokémon duplicado no time." });
   }
 
   const teamName = String(name).trim();
@@ -35,7 +37,9 @@ router.post("/", authMiddleware, (req, res) => {
     }
 
     if (results.length > 0) {
-      return res.status(409).json({ error: "Nome do time já cadastrado para este usuário." });
+      return res
+        .status(409)
+        .json({ error: "Nome do time já cadastrado para este usuário." });
     }
 
     db.beginTransaction((err) => {
@@ -56,7 +60,11 @@ router.post("/", authMiddleware, (req, res) => {
 
         const teamId = teamResult.insertId;
 
-        const values = pokemonIds.map((pokeId, index) => [teamId, index + 1, pokeId]);
+        const values = pokemonIds.map((pokeId, index) => [
+          teamId,
+          index + 1,
+          pokeId,
+        ]);
 
         const insertTeamPokemonsQuery =
           "INSERT INTO team_pokemons (team_id, slot, pokemon_id) VALUES ?";
@@ -65,7 +73,9 @@ router.post("/", authMiddleware, (req, res) => {
           if (err) {
             console.error(err);
             return db.rollback(() => {
-              return res.status(500).json({ error: "Erro ao salvar pokémons do time." });
+              return res
+                .status(500)
+                .json({ error: "Erro ao salvar pokémons do time." });
             });
           }
 
@@ -90,7 +100,5 @@ router.post("/", authMiddleware, (req, res) => {
     });
   });
 });
-
-
 
 export default router;

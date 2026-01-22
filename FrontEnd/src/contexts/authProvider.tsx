@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { AuthContext } from "./authContext";
-import { authService } from "../services/authService"; 
+import { authService } from "../services/authService";
 import type { User } from "../types/LoginResponse";
 import type { ReactNode } from "react";
 
 type AuthProviderProps = {
   children: ReactNode;
 };
-
-
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [token, setToken] = useState<string | null>(() => {
@@ -29,7 +27,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setToken(data.token);
 
     localStorage.setItem("@auth:token", data.token);
-    localStorage.setItem("@auth:user", JSON.stringify(data.user));    
+    localStorage.setItem("@auth:user", JSON.stringify(data.user));
   }
 
   function logout() {
@@ -37,9 +35,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setToken(null);
 
     localStorage.removeItem("@auth:token");
-    localStorage.removeItem("@auth:user");    
+    localStorage.removeItem("@auth:user");
   }
-
 
   return (
     <AuthContext.Provider
@@ -49,4 +46,3 @@ export function AuthProvider({ children }: AuthProviderProps) {
     </AuthContext.Provider>
   );
 }
-

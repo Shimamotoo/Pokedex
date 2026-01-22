@@ -2,17 +2,15 @@ export interface PokemonItem {
   name: string;
 }
 
-// Sprites
 export interface PokemonSprites {
   front_default: string | null;
   other?: {
-    "official-artwork"?:{
+    "official-artwork"?: {
       front_default: string | null;
-    }
-  }
+    };
+  };
 }
 
-// Types
 export interface PokemonType {
   slot: number;
   type: {
@@ -20,7 +18,6 @@ export interface PokemonType {
   };
 }
 
-// Detalhes do Pokémon
 export interface PokemonDetails {
   id: number;
   name: string;
@@ -28,7 +25,7 @@ export interface PokemonDetails {
   types: PokemonType[];
 }
 
-export interface PokemonCardData{
+export interface PokemonCardData {
   id: number;
   name: string;
   image: string;
