@@ -26,9 +26,9 @@ router.post("/", authMiddleware, (req, res) => {
   const teamName = String(name).trim();
   const userId = req.user.id;
 
-  const checkTeamNameQuery = "SELECT id FROM teams WHERE user_id = ? AND name = ?";
+  const teamQuery = "SELECT id FROM teams WHERE user_id = ? AND name = ?";
 
-  db.query(checkTeamNameQuery, [userId, teamName], (err, results) => {
+  db.query(teamQuery, [userId, teamName], (err, results) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: "Erro ao verificar nome do time." });

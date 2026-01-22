@@ -3,14 +3,17 @@ import type { PokemonCardData } from "../types/Pokemon";
 import { PokemonsList } from "../components/PokemonsList";
 import { usePokemons } from "../hooks/usePokemons";
 import toast from "react-hot-toast";
-import type { TeamPayload } from "../types/TeamPayload";
-import { createTeam } from "../services/teamsService";
+import type { CreateTeamPayload } from "../types/TeamResponse";
+// import { createTeam } from "../services/teamsService";
+import { useTeam } from "../hooks/useTeams";
 
 const TEAM_STORAGE_KEY = "pokedex:team";
 const TEAM_SIZE = 6;
 
 function TeamBuilder() {
 
+  const { status, createTeam } = useTeam()
+ 
   const { pokemons, isLoading, error } = usePokemons(151);
 
   const [team, setTeam] = useState<PokemonCardData[]>(() => {
@@ -42,45 +45,46 @@ function TeamBuilder() {
 
   const isDisabled = teamName.trim().length === 0 || team.length !== TEAM_SIZE;
 
-  function isInTeam(team: PokemonCardData[], pokemonId: number) {
-    return team.some((p) => p.id === pokemonId);
-  }
-
-  function isTeamFull(team: PokemonCardData[]) {
-    return team.length >= TEAM_SIZE;
-  }
-
-  function removePokemon(team: PokemonCardData[], pokemonId: number) {
-    return team.filter((p) => p.id !== pokemonId);
-  }
-
   function handleRemovePokemon(pokemonId: number) {
-    setTeam((prev) => removePokemon(prev, pokemonId));
+    setTeam((prev) => prev.filter((p) => p.id !== pokemonId));
   }
 
   function handleSelectTeam(pokemon: PokemonCardData) {
     setTeam((prev) => {
-      if (isTeamFull(prev)) {
-        toast.error("Seu time já tem 6 Pokémon");
+      if (prev.length >= TEAM_SIZE) {
+        toast.error(`Seu time já tem ${TEAM_SIZE} Pokémon`);
         return prev;
       }
-      if (isInTeam(prev, pokemon.id)) {
+
+      if (prev.some((p) => p.id === pokemon.id)) {
         toast("Esse Pokémon já está no time", { icon: "⚠️" });
         return prev;
       }
+
       return [...prev, pokemon];
     });
   }
 
-  async function saveTeamToStorage(team: PokemonCardData[]) {
-    toast.success("Time salvo!");
-    localStorage.setItem(TEAM_STORAGE_KEY, JSON.stringify(team));
-    const payload: TeamPayload = {
+  async function handleCreateTeam() {
+
+    if (!teamName.trim() || team.length !== TEAM_SIZE) return;
+    
+    const payload: CreateTeamPayload = {
       name: teamName.trim(),
       pokemonIds: team.map(p => p.id),
     };    
 
-    await createTeam(payload);
+    try{
+      await createTeam(payload);
+      localStorage.setItem(TEAM_STORAGE_KEY, JSON.stringify(team));
+      toast.success("Time salvo!");
+      setTeam([])
+      setTeamName("")
+
+    } catch {
+      toast.error("Erro ao salvar");
+    }
+    
   }
 
   function handleClearTeam(){
@@ -113,14 +117,14 @@ function TeamBuilder() {
 
           <button
             type="button"
-            onClick={() => saveTeamToStorage(team)}
+            onClick={handleCreateTeam}
             className={`px-5 py-2 font-semibold rounded-md transition-all ${
                 isDisabled? 'bg-slate-400 cursor-not-allowed':'bg-indigo-600 hover:bg-indigo-500'
               }`
             }
-            disabled={isDisabled}
+            disabled={isDisabled || status === "loading"}
           >
-            Salvar
+            {status === "loading"? "Salvando..." : "Salvar"}
           </button>
 
           <button
