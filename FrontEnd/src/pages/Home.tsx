@@ -1,4 +1,8 @@
 function Home() {
+  function handleOpenTeams(){
+    console.log("teste")
+  }
+
   return (
     <div className="min-h-screen text-white bg-gray-900">
       {/* EVENTO PRINCIPAL */}
@@ -19,22 +23,22 @@ function Home() {
       {/* CARDS */}
       <section className="grid max-w-5xl grid-cols-1 gap-6 px-6 py-12 mx-auto sm:grid-cols-2">
         <div className="p-6 bg-gray-800 rounded-lg">
-          <h3 className="mb-2 text-lg font-semibold">Pokémon capturados</h3>
+          <h3 className="mb-2 text-lg font-semibold">Pokémon capturados:</h3>
           <p className="text-2xl font-bold">23 / 151</p>
         </div>
 
-        <div className="p-6 bg-gray-800 rounded-lg">
-          <h3 className="mb-2 text-lg font-semibold">Favoritos</h3>
-          <p className="text-2xl font-bold">5</p>
+        <div className="p-6 bg-gray-800 rounded-lg cursor-pointer" onClick={handleOpenTeams}>
+          <h3 className="mb-2 text-lg font-semibold">Times:</h3>
+          <span className="font-semibold">1</span>/5
         </div>
 
         <div className="p-6 bg-gray-800 rounded-lg">
-          <h3 className="mb-2 text-lg font-semibold">Próximo ovo</h3>
+          <h3 className="mb-2 text-lg font-semibold">Próximo ovo:</h3>
           <p className="text-2xl font-bold">2h 14min</p>
         </div>
 
         <div className="p-6 bg-gray-800 rounded-lg">
-          <h3 className="mb-2 text-lg font-semibold">Sequência diária</h3>
+          <h3 className="mb-2 text-lg font-semibold">Sequência diária:</h3>
           <p className="text-xl">???</p>
         </div>
       </section>

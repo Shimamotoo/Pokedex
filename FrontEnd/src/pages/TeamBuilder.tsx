@@ -4,7 +4,6 @@ import { PokemonsList } from "../components/PokemonsList";
 import { usePokemons } from "../hooks/usePokemons";
 import toast from "react-hot-toast";
 import type { CreateTeamPayload } from "../types/TeamResponse";
-// import { createTeam } from "../services/teamsService";
 import { useTeam } from "../hooks/useTeams";
 
 const TEAM_STORAGE_KEY = "pokedex:team";
@@ -187,7 +186,7 @@ function TeamBuilder() {
                 className="w-full p-3 pr-10 text-white bg-gray-800 border border-gray-700 rounded-md outline-none focus:border-indigo-500"
               />
 
-              <span className="absolute text-gray-400 right-3 top-3">⌕</span>
+              <span className="absolute text-3xl text-gray-400 right-3 top-1">⌕</span>
             </div>
           </div>
 
