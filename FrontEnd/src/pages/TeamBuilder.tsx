@@ -15,13 +15,13 @@ import {
 
 const TEAM_STORAGE_KEY = "pokedex:team";
 
-
-
 function TeamBuilder() {
 
   const { status, createTeam } = useTeam();
 
   const { pokemons, isLoading, error } = usePokemons(151);
+
+  const [ sortBy, setSortBy ]  = useState<string>("id")
 
   const [team, setTeam] = useState<PokemonCardData[]>(() => {
     try {
@@ -36,26 +36,35 @@ function TeamBuilder() {
 
   const [teamName, setTeamName] = useState<string>("");
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState<string>("");
 
-  const slots = buildSlots(team, TEAM_SIZE);
-
-
-
-  const filteredPokemons = useMemo(() => {
-    const term = search.trim().toLowerCase();
-    if (!term) return pokemons;
-
-    return pokemons.filter((p) => p.name.toLowerCase().includes(term));
-  }, [pokemons, search]);
-
+  const slots = useMemo(() => buildSlots(team, TEAM_SIZE), [team]);
+  
   const isDisabled = teamName.trim().length === 0 || !isTeamComplete(team, TEAM_SIZE);
-
 
   function handleRemovePokemon(pokemonId: number) {
     setTeam((prev) => removePokemonFromTeam(prev, pokemonId));
   }
 
+  const SortedPokemons = useMemo(() => {
+  const term = search.trim().toLowerCase();
+
+  let list = pokemons;
+
+  if (term) {
+    list = list.filter((p) =>
+      p.name.toLowerCase().includes(term),
+    );
+  }
+
+  return [...list].sort((a, b) => {
+    if (sortBy === "name") {
+      return a.name.localeCompare(b.name);
+    }
+
+    return a.id - b.id;
+  });
+}, [pokemons, search, sortBy]);
 
   function handleAddToTeam(pokemon: PokemonCardData) {
     setTeam((prev) => {
@@ -73,7 +82,6 @@ function TeamBuilder() {
       return result.team;
     });
   }
-
 
   async function handleCreateTeam() {
     if (!teamName.trim() || !isTeamComplete(team, TEAM_SIZE)) return;
@@ -141,6 +149,7 @@ function TeamBuilder() {
           </button>
 
           <button
+            type="button"
             onClick={handleClearTeam}
             className="px-5 py-2 font-semibold bg-red-500 rounded-md hover:bg-red-400"
           >
@@ -179,7 +188,7 @@ function TeamBuilder() {
               ) : (
                 <>
                   <div className="w-24 h-24 bg-gray-800 border border-gray-700 rounded-xl" />
-                  <div className="text-sm text-gray-400">slot vazio</div>
+                  <div className="text-sm text-gray-400">Slot Vazio</div>
                 </>
               )}
             </div>
@@ -214,7 +223,7 @@ function TeamBuilder() {
             <label className="block mb-2 text-sm text-gray-300">
               Ordenação
             </label>
-            <select className="w-full p-3 text-white bg-gray-800 border border-gray-700 rounded-md outline-none focus:border-indigo-500">
+            <select value={sortBy} onChange={(e) => setSortBy(e.target.value as "id" | "name")} className="w-full p-3 text-white bg-gray-800 border border-gray-700 rounded-md outline-none focus:border-indigo-500">
               <option value="id">Número (padrão)</option>
               <option value="name">Nome (A-Z)</option>
             </select>
@@ -238,7 +247,7 @@ function TeamBuilder() {
 
         {!isLoading && !error && (
           <PokemonsList
-            pokemonsList={filteredPokemons}
+            pokemonsList={SortedPokemons}
             onSelectPokemon={handleAddToTeam}
           />
         )}
