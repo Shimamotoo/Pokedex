@@ -1,15 +1,24 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import type { PokemonCardData } from "../types/Pokemon";
 import { PokemonsList } from "../components/PokemonsList";
 import { usePokemons } from "../hooks/usePokemons";
 import toast from "react-hot-toast";
 import type { CreateTeamPayload } from "../types/TeamResponse";
 import { useTeam } from "../hooks/useTeams";
+import {
+  TEAM_SIZE,
+  addPokemonToTeam,
+  removePokemonFromTeam,
+  isTeamComplete,
+  buildSlots,
+} from "../utils/team";
 
 const TEAM_STORAGE_KEY = "pokedex:team";
-const TEAM_SIZE = 6;
+
+
 
 function TeamBuilder() {
+
   const { status, createTeam } = useTeam();
 
   const { pokemons, isLoading, error } = usePokemons(151);
@@ -29,10 +38,9 @@ function TeamBuilder() {
 
   const [search, setSearch] = useState("");
 
-  const slots = Array.from(
-    { length: TEAM_SIZE },
-    (_, index) => team[index] ?? null,
-  );
+  const slots = buildSlots(team, TEAM_SIZE);
+
+
 
   const filteredPokemons = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -41,30 +49,34 @@ function TeamBuilder() {
     return pokemons.filter((p) => p.name.toLowerCase().includes(term));
   }, [pokemons, search]);
 
-  const isDisabled = teamName.trim().length === 0 || team.length !== TEAM_SIZE;
+  const isDisabled = teamName.trim().length === 0 || !isTeamComplete(team, TEAM_SIZE);
+
 
   function handleRemovePokemon(pokemonId: number) {
-    setTeam((prev) => prev.filter((p) => p.id !== pokemonId));
+    setTeam((prev) => removePokemonFromTeam(prev, pokemonId));
   }
 
-  function handleSelectTeam(pokemon: PokemonCardData) {
+
+  function handleAddToTeam(pokemon: PokemonCardData) {
     setTeam((prev) => {
-      if (prev.length >= TEAM_SIZE) {
-        toast.error(`Seu time já tem ${TEAM_SIZE} Pokémon`);
+      const result = addPokemonToTeam(prev, pokemon, TEAM_SIZE);
+
+      if (!result.ok) {
+        if (result.reason === "FULL") {
+          toast.error(`Seu time já tem ${TEAM_SIZE} Pokémon`);
+        } else {
+          toast("Esse Pokémon já está no time", { icon: "⚠️" });
+        }
         return prev;
       }
 
-      if (prev.some((p) => p.id === pokemon.id)) {
-        toast("Esse Pokémon já está no time", { icon: "⚠️" });
-        return prev;
-      }
-
-      return [...prev, pokemon];
+      return result.team;
     });
   }
 
+
   async function handleCreateTeam() {
-    if (!teamName.trim() || team.length !== TEAM_SIZE) return;
+    if (!teamName.trim() || !isTeamComplete(team, TEAM_SIZE)) return;
 
     const payload: CreateTeamPayload = {
       name: teamName.trim(),
@@ -73,12 +85,12 @@ function TeamBuilder() {
 
     try {
       await createTeam(payload);
-      localStorage.setItem(TEAM_STORAGE_KEY, JSON.stringify(team));
       toast.success("Time salvo!");
       setTeam([]);
       setTeamName("");
-    } catch {
+    } catch(error) {
       toast.error("Erro ao salvar");
+      console.error(error)
     }
   }
 
@@ -86,12 +98,20 @@ function TeamBuilder() {
     setTeam([]);
   }
 
+  useEffect(() => {
+    try {
+      localStorage.setItem(TEAM_STORAGE_KEY, JSON.stringify(team));
+    } catch (e) {
+      console.error("Erro ao salvar team no localStorage", e);
+    }
+  }, [team]);  
+
   return (
     <div className="w-full px-4 py-3">
       <section className="flex flex-col gap-4 mb-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold">TeamBuilder</h1>
-          <p className="text-sm text-gray-300">Monte seu time de 6 Pokémons.</p>
+          <p className="text-sm text-gray-300">Monte seu time de {TEAM_SIZE} Pokémons.</p>
         </div>
 
         <input
@@ -104,7 +124,7 @@ function TeamBuilder() {
 
         <div className="flex items-center gap-3">
           <div className="px-3 py-2 text-sm text-gray-200 bg-gray-800 border border-gray-700 rounded-md">
-            Time: <span className="font-semibold">{team.length}</span>/6
+            Time: <span className="font-semibold">{team.length}</span>/{TEAM_SIZE}
           </div>
 
           <button
@@ -219,7 +239,7 @@ function TeamBuilder() {
         {!isLoading && !error && (
           <PokemonsList
             pokemonsList={filteredPokemons}
-            onSelectPokemon={handleSelectTeam}
+            onSelectPokemon={handleAddToTeam}
           />
         )}
       </section>
