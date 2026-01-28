@@ -1,9 +1,9 @@
-import { useMemo, useState, useEffect } from "react";
 import type { PokemonCardData } from "../types/Pokemon";
+import type { CreateTeamPayload } from "../types/TeamResponse";
+import toast from "react-hot-toast";
+import { useMemo, useState, useEffect } from "react";
 import { PokemonsList } from "../components/PokemonsList";
 import { usePokemons } from "../hooks/usePokemons";
-import toast from "react-hot-toast";
-import type { CreateTeamPayload } from "../types/TeamResponse";
 import { useTeam } from "../hooks/useTeams";
 import {
   TEAM_SIZE,
@@ -47,24 +47,24 @@ function TeamBuilder() {
   }
 
   const SortedPokemons = useMemo(() => {
-  const term = search.trim().toLowerCase();
+    const term = search.trim().toLowerCase();
 
-  let list = pokemons;
+    let list = pokemons;
 
-  if (term) {
-    list = list.filter((p) =>
-      p.name.toLowerCase().includes(term),
-    );
-  }
-
-  return [...list].sort((a, b) => {
-    if (sortBy === "name") {
-      return a.name.localeCompare(b.name);
+    if (term) {
+      list = list.filter((p) =>
+        p.name.toLowerCase().includes(term),
+      );
     }
 
-    return a.id - b.id;
-  });
-}, [pokemons, search, sortBy]);
+    return [...list].sort((a, b) => {
+      if (sortBy === "name") {
+        return a.name.localeCompare(b.name);
+      }
+
+      return a.id - b.id;
+    });
+  }, [pokemons, search, sortBy]);
 
   function handleAddToTeam(pokemon: PokemonCardData) {
     setTeam((prev) => {

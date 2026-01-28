@@ -1,6 +1,11 @@
+import { useNavigate,  } from "react-router-dom";
+
 function Home() {
-  function handleOpenTeams(){
-    console.log("teste")
+  
+  const navigate = useNavigate();
+
+  function handleTeams() {
+    navigate("/teams");
   }
 
   return (
@@ -27,7 +32,7 @@ function Home() {
           <p className="text-2xl font-bold">23 / 151</p>
         </div>
 
-        <div className="p-6 bg-gray-800 rounded-lg cursor-pointer" onClick={handleOpenTeams}>
+        <div className="p-6 bg-gray-800 rounded-lg cursor-pointer" onClick={handleTeams}>
           <h3 className="mb-2 text-lg font-semibold">Times:</h3>
           <span className="font-semibold">1</span>/5
         </div>

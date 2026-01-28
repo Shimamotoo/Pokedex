@@ -6,6 +6,7 @@ import Pokedex from "../pages/Pokedex";
 import AppLayout from "../layouts/AppLayout";
 import TeamBuilder from "../pages/TeamBuilder";
 import DayCare from "../pages/DayCare";
+import Teams from "../pages/Teams";
 
 export function AppRoutes() {
   return (
@@ -19,6 +20,7 @@ export function AppRoutes() {
           <Route path="/teambuilder" element={<TeamBuilder />} />
           <Route path="/pokedex" element={<Pokedex />} />
           <Route path="/daycare" element={<DayCare />} />
+          <Route path="/teams" element={<Teams />} />
         </Route>
       </Route>
     </Routes>
