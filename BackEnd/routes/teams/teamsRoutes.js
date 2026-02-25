@@ -91,7 +91,6 @@ router.post("/", authMiddleware, (req, res) => {
             return res.status(201).json({
               message: "Time salvo com sucesso!",
               id: teamId,
-              userId,
               name: teamName,
               pokemonIds,
             });
@@ -108,36 +107,39 @@ router.put("/alterar/:teamId", authMiddleware, (req, res) => {
   const { name, pokemonIds } = req.body;
   const userId = req.user.id;
 
-  if (!name || String(name).trim().length === 0) return res.status(400).json({ error: "Nome inválido." });
-  if (!Array.isArray(pokemonIds) || pokemonIds.length !== 6) return res.status(400).json({ error: "O time precisa de 6 pokémons." });
-  if (new Set(pokemonIds).size !== pokemonIds.length) return res.status(400).json({ error: "Pokémons duplicados." });
+  if (!name || String(name).trim().length === 0) {
+    return res.status(400).json({ error: "Nome inválido." });
+  }
+  if (!Array.isArray(pokemonIds) || pokemonIds.length !== 6) {
+    return res.status(400).json({ error: "O time precisa de 6 pokémons." });
+  }
 
   const teamName = String(name).trim();
 
+  const sqlUpdateName = "UPDATE teams SET name = ? WHERE id = ? AND user_id = ?";
+  
+  db.query(sqlUpdateName, [teamName, teamId, userId], (err, result) => {
+    if (err) return res.status(500).json({ error: "Erro ao atualizar nome." });
+    
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Time não encontrado ou sem permissão." });
+    }
 
-  db.beginTransaction((err) => {
-    if (err) return res.status(500).json({ error: "Erro na transação." });
+    const sqlDeletePokemons = "DELETE FROM team_pokemons WHERE team_id = ?";
+    
+    db.query(sqlDeletePokemons, [teamId], (err) => {
+      if (err) return res.status(500).json({ error: "Erro ao remover pokémons antigos." });
 
-    const updateNameQuery = "UPDATE teams SET name = ? WHERE id = ? AND user_id = ?";
-    db.query(updateNameQuery, [teamName, teamId, userId], (err, result) => {
-      if (err || result.affectedRows === 0) {
-        return db.rollback(() => res.status(404).json({ error: "Time não encontrado ou sem permissão." }));
-      }
+      const values = pokemonIds.map((pokeId, index) => [teamId, index + 1, pokeId]);
+      const sqlInsertPokemons = "INSERT INTO team_pokemons (team_id, slot, pokemon_id) VALUES ?";
 
-      const deletePokemonsQuery = "DELETE FROM team_pokemons WHERE team_id = ?";
-      db.query(deletePokemonsQuery, [teamId], (err) => {
-        if (err) return db.rollback(() => res.status(500).json({ error: "Erro ao limpar pokémons antigos." }));
+      db.query(sqlInsertPokemons, [values], (err) => {
+        if (err) return res.status(500).json({ error: "Erro ao inserir novos pokémons." });
 
-        const values = pokemonIds.map((pokeId, index) => [teamId, index + 1, pokeId]);
-        const insertPokemonsQuery = "INSERT INTO team_pokemons (team_id, slot, pokemon_id) VALUES ?";
-
-        db.query(insertPokemonsQuery, [values], (err) => {
-          if (err) return db.rollback(() => res.status(500).json({ error: "Erro ao salvar novos pokémons." }));
-
-          db.commit((err) => {
-            if (err) return db.rollback(() => res.status(500).json({ error: "Erro ao finalizar." }));
-            res.json({ message: "Time atualizado com sucesso!", teamId, name: teamName, pokemonIds });
-          });
+        res.json({ 
+          message: "Time atualizado com sucesso!", 
+          teamId, 
+          name: teamName 
         });
       });
     });
