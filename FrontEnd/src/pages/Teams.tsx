@@ -15,8 +15,12 @@ function Teams() {
     fetchTeam(id);
   }
 
-  function handleDeleteTeam(id:number){
-    deleteTeam(id);
+  async function handleDeleteTeam(id: number) {
+    const confirm = window.confirm("Deseja realmente deletar este time?");
+    if (!confirm) return;
+
+    await deleteTeam(id);
+    fetchTeams();
   }
 
   if (status === "loading") {
