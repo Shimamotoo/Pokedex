@@ -32,7 +32,7 @@ function Teams() {
             {teams.length === 0 ? (
               <p>Você ainda não possui nenhum time</p>
             ) : (
-              <div className="p-5 bg-gray-800 border border-gray-700 rounded-md">
+              <div>
                 {teams.map((team) => (
                   <div key={team.id} className="flex justify-between p-5 mt-3 bg-gray-800 border border-gray-700 rounded-md">
                     <div>{team.name}</div>

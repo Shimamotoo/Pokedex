@@ -1,12 +1,27 @@
-import { useNavigate,  } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useTeamsList } from "../hooks/useTeams";
+import { useEffect } from "react";
 
 function Home() {
+    const { teams, fetchTeams, status } = useTeamsList();
+  
+    useEffect(() => {
+      fetchTeams();
+    }, [fetchTeams]);
   
   const navigate = useNavigate();
 
   function handleTeams() {
     navigate("/teams");
   }
+
+  if (status === "loading") {
+    return <div>...</div>;
+  }
+
+  if (status === "error") {
+    return <p>???</p>;
+  }  
 
   return (
     <div className="min-h-screen text-white bg-gray-900">
@@ -34,7 +49,7 @@ function Home() {
 
         <div className="p-6 bg-gray-800 rounded-lg cursor-pointer" onClick={handleTeams}>
           <h3 className="mb-2 text-lg font-semibold">Times:</h3>
-          <span className="font-semibold">1</span>/5
+          <span className="text-2xl font-bold"> {teams.length} </span>/5
         </div>
 
         <div className="p-6 bg-gray-800 rounded-lg">
