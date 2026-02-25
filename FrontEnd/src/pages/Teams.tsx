@@ -1,13 +1,23 @@
 import { ChevronRight, SquarePen, Trash2 } from "lucide-react";
 import { useEffect } from "react";
-import { useTeamsList } from "../hooks/useTeams";
+import { useDeleteTeam, useGetTeam, useTeamsList } from "../hooks/useTeams";
 
 function Teams() {
   const { teams, fetchTeams, status } = useTeamsList();
+  const { fetchTeam } = useGetTeam();
+  const { deleteTeam } = useDeleteTeam()
 
   useEffect(() => {
     fetchTeams();
   }, [fetchTeams]);
+
+  function handleVisualizeTeam(id:number){
+    fetchTeam(id);
+  }
+
+  function handleDeleteTeam(id:number){
+    deleteTeam(id);
+  }
 
   if (status === "loading") {
     return <div>Buscando seu time...</div>;
@@ -37,13 +47,13 @@ function Teams() {
                   <div key={team.id} className="flex justify-between p-5 mt-3 bg-gray-800 border border-gray-700 rounded-md">
                     <div>{team.name}</div>
                     <div className="flex gap-2">
-                      <div className="content-center p-3 bg-gray-800 border border-gray-700 rounded-md cursor-pointer hover:bg-gray-700/85">
+                      <div onClick={() => handleDeleteTeam(team.id)} className="content-center p-3 bg-gray-800 border border-gray-700 rounded-md cursor-pointer hover:bg-gray-700/85">
                         <Trash2 size={20} color="red" />
                       </div>
                       <div className="content-center p-3 bg-gray-800 border border-gray-700 rounded-md cursor-pointer hover:bg-gray-700/85">
                         <SquarePen size={20} />
                       </div>
-                      <div className="p-3 cursor-pointer">
+                      <div className="p-3 cursor-pointer" onClick={() => handleVisualizeTeam(team.id)}>
                         <ChevronRight size={25} />
                       </div>
                     </div>
