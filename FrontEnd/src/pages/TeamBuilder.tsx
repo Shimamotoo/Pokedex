@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { useMemo, useState, useEffect } from "react";
 import { PokemonsList } from "../components/PokemonsList";
 import { usePokemons } from "../hooks/usePokemons";
-import { useTeam } from "../hooks/useTeams";
+import { useCreateTeam } from "../hooks/useTeams";
 import {
   TEAM_SIZE,
   addPokemonToTeam,
@@ -17,7 +17,7 @@ const TEAM_STORAGE_KEY = "pokedex:team";
 
 function TeamBuilder() {
 
-  const { status, createTeam } = useTeam();
+  const { status, createTeam } = useCreateTeam();
 
   const { pokemons, isLoading, error } = usePokemons(151);
 

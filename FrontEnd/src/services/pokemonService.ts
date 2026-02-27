@@ -34,4 +34,22 @@ export const pokemonService = {
       types: pokemon.types.map((t) => t.type.name),
     }));
   },
+  
+  async getPokemonsByIds(ids: number[]): Promise<PokemonCardData[]> {
+    const detailsPromises = ids.map((id) =>
+      this.getPokemonDetail(id.toString()) 
+    );
+    
+    const pokemonsDetails = await Promise.all(detailsPromises);
+  
+    return pokemonsDetails.map((pokemon) => ({
+      id: pokemon.id,
+      name: pokemon.name,
+      image:
+        pokemon.sprites?.other?.["official-artwork"]?.front_default ??
+        pokemon.sprites.front_default ??
+        "",
+      types: pokemon.types.map((t) => t.type.name),
+    }));
+  },  
 };

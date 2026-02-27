@@ -1,24 +1,23 @@
 import { useCallback, useState } from "react";
-import { 
-  createTeam as createTeamService, 
-  getAllTeams as getAllTeamsService, 
+import {
+  createTeam as createTeamService,
+  getAllTeams as getAllTeamsService,
   getTeam as getTeamService,
-  deleteTeam as deleteTeamService 
+  deleteTeam as deleteTeamService,
 } from "../services/teamsService";
-import type { 
-  CreateTeamPayload, 
-  DeleteTeam, 
-  UseCreateTeamResponse, 
-  UseDeleteTeamResponse, 
-  UseGetTeamResponse, 
+import type {
+  CreateTeamPayload,
+  DeleteTeam,
+  UseCreateTeamResponse,
+  UseDeleteTeamResponse,
+  UseGetTeamResponse,
   UseTeamsListResponse,
-  Teams, 
-  Team, 
-
+  Teams,
+  Team,
 } from "../types/TeamResponse";
 import type { AsyncStatus } from "../types/AsyncTypes";
 
-export function useTeam(): UseCreateTeamResponse {
+export function useCreateTeam(): UseCreateTeamResponse {
   const [status, setStatus] = useState<AsyncStatus>("idle");
 
   const createTeam = useCallback(async (payload: CreateTeamPayload) => {
@@ -46,64 +45,70 @@ export function useTeamsList(): UseTeamsListResponse {
 
   const fetchTeams = useCallback(async () => {
     setStatus("loading");
+
     try {
       const data = await getAllTeamsService();
       setTeams(data);
       setStatus("success");
     } catch (err) {
       setStatus("error");
-      throw err
+      throw err;
     }
   }, []);
 
-  return { 
-    teams, 
-    status, 
-    fetchTeams 
+  return {
+    teams,
+    status,
+    fetchTeams,
   };
 }
 
-export function useGetTeam(): UseGetTeamResponse{
+export function useGetTeam(): UseGetTeamResponse {
   const [team, setTeam] = useState<Team[]>([]);
   const [status, setStatus] = useState<AsyncStatus>("idle");
 
-  const fetchTeam = useCallback(async (id:number) => {
+  const fetchTeam = useCallback(async (id: number) => {
     setStatus("loading");
 
-    try{
-      const data = await getTeamService(id)
+    try {
+      const data = await getTeamService(id);
       setTeam(data);
       setStatus("success");
-    } catch(err) {
+      return data;
+    } catch (err) {
       setStatus("error");
-      throw err
-    } 
-  }, [])
+      throw err;
+    }
+  }, []);
 
-  return{ team, status, fetchTeam }
+  return {
+    team,
+    status,
+    fetchTeam,
+  };
 }
 
-export function useDeleteTeam(): UseDeleteTeamResponse{
+export function useDeleteTeam(): UseDeleteTeamResponse {
   const [status, setStatus] = useState<AsyncStatus>("idle");
   const [result, setResult] = useState<DeleteTeam | null>(null);
 
-  const deleteTeam = useCallback(async (id:number) => {
+  const deleteTeam = useCallback(async (id: number) => {
     setStatus("loading");
 
-    try{
-      const data = await deleteTeamService(id)
-      setResult(data)
+    try {
+      const data = await deleteTeamService(id);
+      setResult(data);
       setStatus("success");
-    } catch(err) {
-      setResult(null)
+    } catch (err) {
+      setResult(null);
       setStatus("error");
-      throw err
+      throw err;
     }
-  }, [])
+  }, []);
 
   return {
     status,
     deleteTeam,
-    result
-  }
+    result,
+  };
 }

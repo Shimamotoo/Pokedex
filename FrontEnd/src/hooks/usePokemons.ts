@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { PokemonCardData } from "../types/Pokemon";
 import { pokemonService } from "../services/pokemonService";
 
+
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error) return error.message;
   if (typeof error === "string") return error;
@@ -39,3 +40,5 @@ export function usePokemons(limit = 151) {
 
   return { pokemons, isLoading, error };
 }
+
+

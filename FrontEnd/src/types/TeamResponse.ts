@@ -34,14 +34,14 @@ export type UseTeamsListResponse = AsyncHookState & {
 
 export type Team = {
   id:number,
-  teamId: number,
-  pokemonId: number,
+  team_id: number,
+  pokemon_id: number,
   slot: number
 }
 
 export type UseGetTeamResponse = AsyncHookState & {
   team:Team[]
-  fetchTeam:(id:number) => Promise<void>;
+	fetchTeam:(id:number) => Promise<Team[]>;
 }
 
 export type DeleteTeam = {
