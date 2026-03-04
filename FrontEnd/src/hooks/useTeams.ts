@@ -4,9 +4,10 @@ import {
   getAllTeams as getAllTeamsService,
   getTeam as getTeamService,
   deleteTeam as deleteTeamService,
+  updateTeam as updateTeamService
 } from "../services/teamsService";
 import type {
-  CreateTeamPayload,
+  TeamPayload,
   DeleteTeam,
   UseCreateTeamResponse,
   UseDeleteTeamResponse,
@@ -14,13 +15,14 @@ import type {
   UseTeamsListResponse,
   Teams,
   Team,
+  useUpdateTeamResponse,
 } from "../types/TeamResponse";
 import type { AsyncStatus } from "../types/AsyncTypes";
 
 export function useCreateTeam(): UseCreateTeamResponse {
   const [status, setStatus] = useState<AsyncStatus>("idle");
 
-  const createTeam = useCallback(async (payload: CreateTeamPayload) => {
+  const createTeam = useCallback(async (payload: TeamPayload) => {
     setStatus("loading");
 
     try {
@@ -111,4 +113,24 @@ export function useDeleteTeam(): UseDeleteTeamResponse {
     deleteTeam,
     result,
   };
+}
+
+export function useUpdateTeam(): useUpdateTeamResponse{
+  const [status, setStatus] = useState<AsyncStatus>("idle");
+
+  const updateTeam = useCallback(async (id:number, payload: TeamPayload) => {
+    try{
+      const data = await updateTeamService(id, payload)
+       setStatus("success");
+      return data;     
+    } catch (err) {
+      setStatus("error")
+      throw err
+    }
+  }, []);
+
+  return{
+    status,
+    updateTeam
+  }
 }

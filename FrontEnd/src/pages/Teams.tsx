@@ -5,7 +5,7 @@ import { useDeleteTeam, useGetTeam, useTeamsList } from "../hooks/useTeams";
 import toast from "react-hot-toast";
 import type { PokemonCardData } from "../types/Pokemon";
 import { pokemonService } from "../services/pokemonService";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const typeHex: Record<string, string> = {
   normal: "#A8A77A",
@@ -29,7 +29,7 @@ const typeHex: Record<string, string> = {
 };
 
 function Teams() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const { teams, fetchTeams, status } = useTeamsList();
   const { fetchTeam } = useGetTeam();
   const { deleteTeam } = useDeleteTeam();
@@ -43,9 +43,9 @@ function Teams() {
     fetchTeams();
   }, [fetchTeams]);
 
-  // function handleAlterTeam(id: number){
-  //   navigate("/home")
-  // }
+  function handleAlterTeam(id: number){
+    navigate(`/teams/${id}`)
+  }
 
   async function handleOpenViewModal(id: number){
     try {
@@ -118,7 +118,7 @@ function Teams() {
                       <div onClick={() => handleOpenDeleteModal(team.id)} className="content-center p-3 bg-gray-800 border border-gray-700 rounded-md cursor-pointer hover:bg-gray-700/85">
                         <Trash2 size={20} color="red" />
                       </div>
-                      <div onClick={() => handleOpenDeleteModal(team.id)} className="content-center p-3 bg-gray-800 border border-gray-700 rounded-md cursor-pointer hover:bg-gray-700/85">
+                      <div onClick={() => handleAlterTeam(team.id)} className="content-center p-3 bg-gray-800 border border-gray-700 rounded-md cursor-pointer hover:bg-gray-700/85">
                         <SquarePen size={20} />
                       </div>
                       <div className="p-3 cursor-pointer" onClick={() => handleOpenViewModal(team.id)}>

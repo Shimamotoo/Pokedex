@@ -4,7 +4,7 @@ export type AsyncHookState = {
   status: AsyncStatus;
 };
 
-export type CreateTeamPayload = {
+export type TeamPayload = {
   name: string;
   pokemonIds: number[];
 };
@@ -17,7 +17,7 @@ export type CreateTeamResponse = {
 };
 
 export type UseCreateTeamResponse = AsyncHookState & {
-  createTeam: (payload: CreateTeamPayload) => Promise<CreateTeamResponse>;
+  createTeam: (payload: TeamPayload) => Promise<CreateTeamResponse>;
 };
 
 export type Teams = {
@@ -36,7 +36,8 @@ export type Team = {
   id:number,
   team_id: number,
   pokemon_id: number,
-  slot: number
+	slot: number,
+	name?: string
 }
 
 export type UseGetTeamResponse = AsyncHookState & {
@@ -52,4 +53,14 @@ export type DeleteTeam = {
 export type UseDeleteTeamResponse = AsyncHookState &{
   deleteTeam:(id:number) => Promise<void>;
   result: DeleteTeam | null;
+}
+
+export type UpdateTeam = {
+	message: string,
+	teamId: string,
+	name: string  
+}
+
+export type useUpdateTeamResponse = AsyncHookState &{
+  updateTeam:(id:number, payload: TeamPayload) => Promise<UpdateTeam>;
 }

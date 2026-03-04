@@ -172,15 +172,25 @@ router.get("/listar", authMiddleware, (req, res) => {
 //VISUALIZAR TIME
 router.get("/visualizar/:teamId", authMiddleware, (req, res) => {
   const { teamId } = req.params;
+  const userId = req.user.id;
 
   if(!teamId){
     return res.status(400).json({ error: "Time informado não encontrado." });
   }
 
   const sqlQuery = `
-    SELECT * FROM team_pokemons WHERE team_id = ? ORDER BY slot;
+    SELECT 
+      teams.name,
+      team_pokemons.id,
+      team_pokemons.team_id,
+      team_pokemons.pokemon_id,
+      team_pokemons.slot
+    FROM team_pokemons
+    INNER JOIN teams ON team_pokemons.team_id = teams.id
+    WHERE team_pokemons.team_id = ? AND teams.user_id = ?
+    ORDER BY team_pokemons.slot;
   `
-  db.query(sqlQuery, [teamId], (err, results) => {
+  db.query(sqlQuery, [teamId, userId], (err, results) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: "Erro ao buscar os time." });
