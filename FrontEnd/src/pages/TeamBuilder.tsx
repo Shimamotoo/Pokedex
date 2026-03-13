@@ -1,5 +1,5 @@
 import type { PokemonCardData } from "../types/Pokemon";
-import type { CreateTeamPayload } from "../types/TeamResponse";
+import type {  TeamPayload } from "../types/TeamResponse";
 import toast from "react-hot-toast";
 import { useMemo, useState, useEffect } from "react";
 import { PokemonsList } from "../components/PokemonsList";
@@ -86,7 +86,7 @@ function TeamBuilder() {
   async function handleCreateTeam() {
     if (!teamName.trim() || !isTeamComplete(team, TEAM_SIZE)) return;
 
-    const payload: CreateTeamPayload = {
+    const payload:  TeamPayload = {
       name: teamName.trim(),
       pokemonIds: team.map((p) => p.id),
     };

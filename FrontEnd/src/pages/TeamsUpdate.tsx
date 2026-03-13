@@ -106,7 +106,7 @@ function TeamUpdate() {
       toast.success("Time salvo!");
       setTeam([]);
       setTeamName("");
-      navigate("/teams")
+      navigate("/teams ")
     } catch(error) {
       toast.error("Erro ao salvar");
       console.error(error)

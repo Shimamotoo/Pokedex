@@ -199,7 +199,7 @@ function Teams() {
                 type="button"
                 onClick={handleCloseModal}
                 disabled={isDeleting}
-                className="px-4 py-2 text-sm font-medium text-gray-200 bg-gray-700 rounded-md hover:bg-gray-600 disabled:opacity-60"
+                className="px-4 py-2 text-sm font-medium text-gray-200 bg-indigo-500 rounded-md hover:bg-indigo-400 disabled:opacity-60"
               >
                 Cancelar
               </button>
